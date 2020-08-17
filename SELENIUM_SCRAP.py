@@ -13,6 +13,7 @@ import pandas as pd
 import os
 import datetime as dt
 import numpy as np
+import sys
 
 
 
@@ -41,9 +42,10 @@ def CREAR_SELENIUM_DRIVER(PATH_DOWNLOAD= os.getcwd()):
        DRIVER=webdriver.Firefox(profile, executable_path='geckodriver')
        return(DRIVER)
 
-    
+
 PAPERS= pd.read_csv('PAPERS_TO_DOWNLOAD.csv')
-PATH_TO_DOWNLOAD= os.path.join(os.getcwd(),dt.datetime.now().strftime("%m_%d_%Y_%H:%M:%S"))
+PATH_TO_DOWNLOAD= sys.argv[1]
+
 
 DRIVER= CREAR_SELENIUM_DRIVER(PATH_DOWNLOAD=PATH_TO_DOWNLOAD)
 for i in np.arange(0,len(PAPERS['Title'])):
@@ -53,5 +55,10 @@ for i in np.arange(0,len(PAPERS['Title'])):
     DRIVER.find_element_by_css_selector("#open").click() # PULSO EL BOTOM MONTH
     #DRIVER.find_element_by_css_selector("#buttons > ul:nth-child(1) > li:nth-child(1) > a:nth-child(1)").click()
 
+while True:
+    DOWNLOADED_FILES= [item for item in os.listdir(PATH_TO_DOWNLOAD) if '.part' in item]
+    if len(DOWNLOADED_FILES)==0:
+        break
+        
 DRIVER.close()                              
 
